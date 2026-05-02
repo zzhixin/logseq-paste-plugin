@@ -1,0 +1,31 @@
+{
+  "name": "logseq-paste-plugin",
+  "version": "0.1.0",
+  "description": "A Logseq plugin that converts pasted base64 images into asset files and markdown references.",
+  "type": "module",
+  "scripts": {
+    "dev": "parcel watch index.html --dist-dir dist --public-url ./ --no-cache",
+    "build": "node scripts/build.mjs"
+  },
+  "keywords": [
+    "logseq",
+    "plugin",
+    "clipboard",
+    "paste",
+    "base64"
+  ],
+  "author": "",
+  "license": "MIT",
+  "logseq": {
+    "id": "logseq-paste-plugin",
+    "title": "Logseq Paste Plugin",
+    "icon": "./icon.svg"
+  },
+  "dependencies": {
+    "@logseq/libs": "^0.0.17"
+  },
+  "devDependencies": {
+    "parcel": "^2.15.4",
+    "typescript": "^5.9.3"
+  }
+}
