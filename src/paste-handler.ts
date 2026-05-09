@@ -1,7 +1,7 @@
 import { insertPlainTextFallback, insertTransformedSegments } from "./editor-service";
 import { saveBase64Image } from "./file-service";
 import { containsBase64Image, parseClipboardText, summarizeParsedImages } from "./parser";
-import { isDebugModeEnabled } from "./settings";
+import { isDebugModeEnabled, isNewlineToBlocksEnabled } from "./settings";
 import type { ParsedImageSegment } from "./types";
 
 export function registerPasteHandler(): void {
@@ -41,13 +41,17 @@ export async function handleClipboardPaste(): Promise<void> {
     }
 
     if (!containsBase64Image(clipboardText)) {
-      await insertPlainTextFallback(clipboardText);
+      await insertPlainTextFallback(clipboardText, {
+        newlineToBlocks: isNewlineToBlocksEnabled(),
+      });
       return;
     }
 
     const result = parseClipboardText(clipboardText);
     if (!result.hasImages) {
-      await insertPlainTextFallback(clipboardText);
+      await insertPlainTextFallback(clipboardText, {
+        newlineToBlocks: isNewlineToBlocksEnabled(),
+      });
       return;
     }
 
@@ -111,7 +115,9 @@ async function processBase64Paste(
       }
     }
 
-    await insertTransformedSegments(segments, savedImages);
+    await insertTransformedSegments(segments, savedImages, {
+      newlineToBlocks: isNewlineToBlocksEnabled(),
+    });
 
     if (isDebugModeEnabled()) {
       logseq.UI.showMsg(`已完成转换并插入 ${savedImages.length} 张图片引用。`, "success", {
@@ -123,6 +129,8 @@ async function processBase64Paste(
     logseq.UI.showMsg("base64 图片转换失败，已回退为普通文本粘贴。", "warning", {
       timeout: 3000,
     });
-    await insertPlainTextFallback(rawText);
+    await insertPlainTextFallback(rawText, {
+      newlineToBlocks: isNewlineToBlocksEnabled(),
+    });
   }
 }
